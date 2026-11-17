@@ -7,6 +7,12 @@ sources** on **2026-11-17** by my own job discovery pipeline
 Built first in **Tableau Public**, second in **Power BI**, because building the same dashboard
 in both tools is the fastest honest way to learn them.
 
+## Live version
+
+The Tableau build is published and live
+
+https://public.tableau.com/app/profile/david.buchan8163/viz/snapshotofJuniorRemoterolesavailable/Dashboard1
+
 ## The data
 
 `data/jobs_snapshot_2026-11-17.csv` — one flat table.
