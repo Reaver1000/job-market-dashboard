@@ -1,0 +1,24 @@
+-- DAX measures for the job market dashboard.
+-- Table name is assumed to be 'jobs' (rename to match your load).
+
+Total Roles = COUNTROWS ( jobs )
+
+Remote Roles = CALCULATE ( COUNTROWS ( jobs ), jobs[remote] = 1 )
+
+Remote Share % = DIVIDE ( [Remote Roles], [Total Roles], 0 )
+
+Distinct Companies = DISTINCTCOUNT ( jobs[company] )
+
+Distinct Sources = DISTINCTCOUNT ( jobs[source] )
+
+Roles with Date = CALCULATE ( COUNTROWS ( jobs ), NOT ( ISBLANK ( jobs[posted] ) ) )
+
+Junior Roles =
+CALCULATE (
+    COUNTROWS ( jobs ),
+    CONTAINSSTRING ( LOWER ( jobs[title] ), "junior" )
+        || CONTAINSSTRING ( LOWER ( jobs[title] ), "graduate" )
+        || CONTAINSSTRING ( LOWER ( jobs[title] ), "entry" )
+)
+
+Junior Share % = DIVIDE ( [Junior Roles], [Total Roles], 0 )
