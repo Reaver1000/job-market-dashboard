@@ -1,8 +1,9 @@
 # Job Market Dashboard
 
-A BI dashboard over a snapshot of **15,516 live job postings** collected from **73 public
-sources** on **2026-11-17** by my own job discovery pipeline
-([remote-job-engine](https://github.com/Reaver1000/remote-job-engine)).
+A BI dashboard over a snapshot of **15,936 live job postings** collected from **81 public
+sources** on **2026-11-18** by my own job discovery pipeline
+([remote-job-engine](https://github.com/Reaver1000/remote-job-engine)). The sweep runs daily
+and `data/latest.csv` is refreshed with it.
 
 Built first in **Tableau Public**, second in **Power BI**, because building the same dashboard
 in both tools is the fastest honest way to learn them.
@@ -13,9 +14,13 @@ The Tableau build is published and live
 
 https://public.tableau.com/app/profile/david.buchan8163/viz/snapshotofJuniorRemoterolesavailable/Dashboard1
 
+It was built on the 2026-11-17 snapshot; republish it against `data/latest.csv` when you want
+the current numbers.
+
 ## The data
 
-`data/jobs_snapshot_2026-11-17.csv` — one flat table.
+`data/latest.csv` — one flat table, refreshed with each sweep. Dated copies
+(`data/jobs_snapshot_YYYY-MM-DD.csv`) are kept for history.
 
 | column | meaning |
 |---|---|
@@ -23,11 +28,21 @@ https://public.tableau.com/app/profile/david.buchan8163/viz/snapshotofJuniorRemo
 | company | hiring company or board slug |
 | location | posting location text |
 | remote | 1 if the location or title signals remote work, else 0 |
-| posted | posting date, where the source provided one |
+| posted | posting date, where the source provided one (about 85% of rows) |
 | source | collecting lane: ats_greenhouse, ats_ashby, freehire_personio, linkedin_de, ... |
 | url | original posting URL |
 
-Point-in-time capture of public postings. Aggregates and samples only, nothing personal.
+Two things worth knowing before charting `posted`. Greenhouse reports a posting's `updated_at`,
+not its first-published date, so a handful of dormant postings carry old dates (the oldest in
+the current snapshot is 2021-03-16). And rows without a date stay blank rather than being
+filled with a fake value.
+
+## Refreshing the snapshot
+
+`build_snapshot.py` reads one day's sweep outputs (the markdown files the
+remote-job-engine pipeline writes) and rebuilds the CSV: dedupes by URL, derives the remote
+flag from location and title, and carries each source's posting date into `posted`. Run it in
+the sweep working directory, then copy the result to `data/latest.csv` and commit.
 
 ## Build it in Tableau Public (fast path)
 
