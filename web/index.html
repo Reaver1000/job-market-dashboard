@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Market Snapshot</title>
+<meta name="description" content="A live dashboard over one day's sweep of the remote job market: about 16,000 postings from 80+ public sources. Postings per day, remote and junior splits by region, top hiring companies.">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Job Market Snapshot</h1>
+  <p id="status">loading the latest sweep...</p>
+  <p class="sub">
+    Live postings collected from 80+ public sources by
+    <a href="https://github.com/Reaver1000/remote-job-engine">remote-job-engine</a>.
+    Everything runs in your browser: the data is the published
+    <a href="https://raw.githubusercontent.com/Reaver1000/job-market-dashboard/main/data/latest.csv">latest.csv</a>
+    from <a href="https://github.com/Reaver1000/job-market-dashboard">job-market-dashboard</a>.
+    <span id="countNote"></span>
+  </p>
+</header>
+
+<aside>
+  <h2>Filters</h2>
+  <div class="field"><label><input type="checkbox" id="remoteOnly"> Remote roles only</label></div>
+  <div class="field"><label><input type="checkbox" id="juniorOnly"> Junior/entry roles only</label></div>
+  <div class="field"><label><input type="checkbox" id="excludeUS"> Exclude US-located roles</label></div>
+  <div class="field"><input type="text" id="search" placeholder="title contains (e.g. data analyst)"></div>
+  <div class="field">
+    <label>Trend window
+      <select id="window">
+        <option value="7">last 7 days</option>
+        <option value="30" selected>last 30 days</option>
+        <option value="90">last 90 days</option>
+        <option value="all">all time</option>
+      </select>
+    </label>
+  </div>
+  <h3>Source lanes</h3>
+  <div id="sourceBox" class="sources"></div>
+</aside>
+
+<main>
+  <section class="kpis">
+    <div class="kpi"><span class="n" id="kTotal">0</span><span class="l">postings</span></div>
+    <div class="kpi"><span class="n" id="kRemote">0</span><span class="s" id="kRemotePct"></span><span class="l">remote</span></div>
+    <div class="kpi"><span class="n" id="kJunior">0</span><span class="s" id="kJuniorPct"></span><span class="l">junior/entry-titled</span></div>
+    <div class="kpi"><span class="n" id="kJrRemote">0</span><span class="l">junior &amp; remote</span></div>
+    <div class="kpi"><span class="n" id="kNonUsRemote">0</span><span class="l">remote, outside US*</span></div>
+    <div class="kpi"><span class="n" id="kCompanies">0</span><span class="l">companies</span></div>
+  </section>
+
+  <section class="wide">
+    <h2>Postings per day</h2>
+    <canvas id="cPerDay" height="110"></canvas>
+  </section>
+
+  <section class="grid">
+    <div><canvas id="cRegions"></canvas></div>
+    <div><canvas id="cRemoteRegions"></canvas></div>
+    <div><canvas id="cJuniorRegions"></canvas></div>
+    <div><canvas id="cSeniority"></canvas></div>
+  </section>
+
+  <section class="grid two">
+    <div><canvas id="cCompanies"></canvas></div>
+    <div><canvas id="cSources"></canvas></div>
+  </section>
+
+  <section class="wide">
+    <canvas id="cRemoteShare" height="150"></canvas>
+  </section>
+</main>
+
+<footer>
+  <p>
+    Point-in-time capture of public job postings; aggregates only, nothing personal.
+    Regions are derived from free-text locations, best effort and in public in
+    <a href="https://github.com/Reaver1000/job-market-dashboard/blob/main/web/app.js">app.js</a>:
+    "Unrecognised" means no known pattern matched, "Remote (unspecified)" means the posting
+    says remote without naming a region. Greenhouse reports a posting's updated date rather
+    than its first-published date, so a few dormant postings carry old dates.
+    *Counts remote roles whose recognised region is not the United States.
+  </p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
