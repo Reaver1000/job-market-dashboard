@@ -96,10 +96,17 @@ function countBy(rows, key) {
   return [...m.entries()].sort((a, b) => b[1] - a[1]);
 }
 
-function aggregate(rows, windowDays) {
+function aggregate(rows, windowDays, asOf) {
   const total = rows.length;
   const kpi = { total };
-  if (!total) return { kpi, perDay: [], regions: [], remoteRegions: [], juniorRegions: [], seniority: [], companies: [], sources: [], remoteShare: [] };
+  if (!total) return { kpi, perDay: [], regions: [], remoteRegions: [], juniorRegions: [], seniority: [], companies: [], sources: [], remoteShare: [], ageBuckets: [], staleCompanies: [] };
+
+  const refDay = asOf || new Date().toISOString().slice(0, 10);
+  const refMs = new Date(refDay + "T00:00:00Z").getTime();
+  const DAY = 86400000;
+  const ageCount = { "fresh (<7d)": 0, "recent (7-30d)": 0, "aging (30-60d)": 0, "stale (60-90d)": 0, "ghost (90d+)": 0, undated: 0 };
+  const staleCo = new Map();
+  let stale60 = 0;
 
   let remoteN = 0, juniorN = 0, jrRemote = 0, nonUsRemote = 0;
   const companies = new Set();
@@ -109,6 +116,16 @@ function aggregate(rows, windowDays) {
     if (r.remote && r.junior) jrRemote++;
     if (r.remote && r.region !== "United States" && r.region !== "Unrecognised") nonUsRemote++;
     companies.add(r.company);
+    if (r.posted) {
+      const age = Math.floor((refMs - new Date(r.posted + "T00:00:00Z").getTime()) / DAY);
+      if (age >= 0) {
+        if (age < 7) ageCount["fresh (<7d)"]++;
+        else if (age < 30) ageCount["recent (7-30d)"]++;
+        else if (age < 60) ageCount["aging (30-60d)"]++;
+        else if (age < 90) { ageCount["stale (60-90d)"]++; stale60++; }
+        else { ageCount["ghost (90d+)"]++; stale60++; staleCo.set(r.company, (staleCo.get(r.company) || 0) + 1); }
+      } else ageCount.undated++;
+    } else ageCount.undated++;
   }
   kpi.remote = remoteN;
   kpi.remotePct = (100 * remoteN / total).toFixed(1);
@@ -117,6 +134,11 @@ function aggregate(rows, windowDays) {
   kpi.juniorRemote = jrRemote;
   kpi.nonUsRemote = nonUsRemote;
   kpi.companies = companies.size;
+  kpi.stale60 = stale60;
+  kpi.stale60Pct = (100 * stale60 / total).toFixed(1);
+
+  const ageOrder = ["fresh (<7d)", "recent (7-30d)", "aging (30-60d)", "stale (60-90d)", "ghost (90d+)", "undated"];
+  const ageBuckets = ageOrder.map(k => [k, ageCount[k]]);
 
   const dayMap = new Map();
   let maxDay = null;
@@ -144,6 +166,8 @@ function aggregate(rows, windowDays) {
     seniority: countBy(rows, "seniority"),
     companies: countBy(rows, "company").slice(0, 15),
     sources: countBy(rows, "source").slice(0, 15),
+    ageBuckets,
+    staleCompanies: [...staleCo.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12),
     remoteShare: (() => {
       const m = new Map();
       for (const r of rows) {
@@ -248,6 +272,8 @@ if (typeof window !== "undefined" && typeof document !== "undefined") {
     $("kJrRemote").textContent = a.kpi.juniorRemote.toLocaleString();
     $("kNonUsRemote").textContent = a.kpi.nonUsRemote.toLocaleString();
     $("kCompanies").textContent = a.kpi.companies.toLocaleString();
+    $("kStale60").textContent = a.kpi.stale60.toLocaleString();
+    $("kStale60Pct").textContent = a.kpi.stale60Pct + "%";
     $("countNote").textContent =
       a.kpi.total.toLocaleString() + " postings in view";
 
@@ -269,6 +295,9 @@ if (typeof window !== "undefined" && typeof document !== "undefined") {
     doughnut("cRemoteRegions", a.remoteRegions, "Remote postings by region");
     doughnut("cJuniorRegions", a.juniorRegions, "Junior/entry postings by region");
     doughnut("cSeniority", a.seniority, "Titles by seniority signal");
+    doughnut("cAge", a.ageBuckets, "Age of live postings (by posted date)");
+
+    bar("cStaleCo", a.staleCompanies, "Companies with most 90d+ postings still live", true);
 
     bar("cCompanies", a.companies, "Top companies", true);
     bar("cSources", a.sources, "Roles by source", true);

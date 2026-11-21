@@ -64,6 +64,20 @@
     <div><canvas id="cSeniority"></canvas></div>
   </section>
 
+  <section class="wide ghost">
+    <h2>How fresh are the postings?</h2>
+    <p class="sectnote">
+      <span id="kStale60" class="bignum">0</span> postings older than 60 days are
+      still live (<span id="kStale60Pct" class="bignum"></span>). Some are genuinely
+      hard to fill; a lot are ghost ads. The donut splits every live posting by its
+      posted date.
+    </p>
+    <div class="grid two">
+      <div><canvas id="cAge"></canvas></div>
+      <div><canvas id="cStaleCo"></canvas></div>
+    </div>
+  </section>
+
   <section class="grid two">
     <div><canvas id="cCompanies"></canvas></div>
     <div><canvas id="cSources"></canvas></div>
@@ -81,7 +95,9 @@
     <a href="https://github.com/Reaver1000/job-market-dashboard/blob/main/web/app.js">app.js</a>:
     "Unrecognised" means no known pattern matched, "Remote (unspecified)" means the posting
     says remote without naming a region. Greenhouse reports a posting's updated date rather
-    than its first-published date, so a few dormant postings carry old dates.
+    than its first-published date, so a few dormant postings carry old dates. Age in the
+    freshness section is measured from your clock against the snapshot's posted dates; the
+    snapshot refreshes daily, so the two normally agree within a day.
     *Counts remote roles whose recognised region is not the United States.
   </p>
 </footer>
