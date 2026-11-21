@@ -47,7 +47,17 @@ filled with a fake value.
 `build_snapshot.py` reads one day's sweep outputs (the markdown files the
 remote-job-engine pipeline writes) and rebuilds the CSV: dedupes by URL, derives the remote
 flag from location and title, and carries each source's posting date into `posted`. Run it in
-the sweep working directory, then copy the result to `data/latest.csv` and commit.
+the sweep working directory, then copy the result to `data/latest.csv`, save a dated copy as
+`data/jobs_snapshot_YYYY-MM-DD.csv`, and commit.
+
+`python publish_dataset.py` then rebuilds `data/history.csv` from all dated snapshots
+(every posting ever observed, deduped by URL, with first_seen and last_seen sweep dates) and
+`--push-hf Reaver1000/job-market-daily` publishes the snapshots and the history to the
+[Hugging Face dataset](https://huggingface.co/datasets/Reaver1000/job-market-daily) using the
+`HF_TOKEN` environment variable.
+
+So the daily flow is: latest.csv always holds the most recent sweep (the dashboard reads it),
+dated snapshots accumulate, and history.csv is the growing corpus behind it.
 
 ## Build it in Tableau Public (fast path)
 
