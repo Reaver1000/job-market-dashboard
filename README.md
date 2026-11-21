@@ -56,8 +56,14 @@ the sweep working directory, then copy the result to `data/latest.csv`, save a d
 [Hugging Face dataset](https://huggingface.co/datasets/Reaver1000/job-market-daily) using the
 `HF_TOKEN` environment variable.
 
+`python junior_report.py` re-scans the ATS boards for junior-titled ads with full
+descriptions (a few minutes) and writes `data/junior_ads_YYYY-MM-DD.csv` with the parsed
+experience bar, the technologies named, and the exact requirement sentence. Publish it into
+the dataset's `junior/` folder to keep the junior-reality-check series accumulating.
+
 So the daily flow is: latest.csv always holds the most recent sweep (the dashboard reads it),
-dated snapshots accumulate, and history.csv is the growing corpus behind it.
+dated snapshots accumulate, history.csv is the growing corpus behind it, and the junior scan
+tracks what the junior market actually demands.
 
 ## Build it in Tableau Public (fast path)
 
