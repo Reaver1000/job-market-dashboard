@@ -54,7 +54,8 @@ the sweep working directory, then copy the result to `data/latest.csv`, save a d
 (every posting ever observed, deduped by URL, with first_seen and last_seen sweep dates) and
 `--push-hf Reaver1000/job-market-daily` publishes the snapshots and the history to the
 [Hugging Face dataset](https://huggingface.co/datasets/Reaver1000/job-market-daily) using the
-`HF_TOKEN` environment variable.
+`HF_TOKEN` environment variable. The same data is mirrored on
+[Kaggle](https://www.kaggle.com/datasets/davidbuchan1000/job-market-daily).
 
 `python junior_report.py` re-scans the ATS boards for junior-titled ads with full
 descriptions (a few minutes) and writes `data/junior_ads_YYYY-MM-DD.csv` with the parsed
