@@ -61,6 +61,11 @@ descriptions (a few minutes) and writes `data/junior_ads_YYYY-MM-DD.csv` with th
 experience bar, the technologies named, and the exact requirement sentence. Publish it into
 the dataset's `junior/` folder to keep the junior-reality-check series accumulating.
 
+`python pay_report.py` runs the same scan for pay transparency: structured compensation
+fields where the platform exposes them, salary figures parsed from descriptions, and the
+dodge phrases used instead of numbers. It writes `data/pay_transparency_YYYY-MM-DD.csv` for
+the dataset's `pay/` folder.
+
 So the daily flow is: latest.csv always holds the most recent sweep (the dashboard reads it),
 dated snapshots accumulate, history.csv is the growing corpus behind it, and the junior scan
 tracks what the junior market actually demands.
