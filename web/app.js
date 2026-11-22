@@ -5,7 +5,7 @@
 // ---------------- pure logic ----------------
 
 const REGION_RULES = [
-  ["United States", /united states|\busa\b|u\.s\.|\bamerica\b|new york|san francisco|los angeles|chicago|boston|austin|seattle|denver|atlanta|dallas|miami|philadelphia|phoenix|houston|washington/i],
+  ["United States", /united states|\busa\b|u\.s\.|\bus\b|\bamerica\b|new york|san francisco|los angeles|chicago|boston|austin|seattle|denver|atlanta|dallas|miami|philadelphia|phoenix|houston|washington/i],
   ["Canada", /canada|toronto|vancouver|montreal|ottawa|calgary/i],
   ["United Kingdom", /united kingdom|\buk\b|\bengland\b|scotland|wales|london|manchester|birmingham|\bleeds\b|bristol|edinburgh|glasgow/i],
   ["Germany", /germany|deutschland|berlin|munich|m\u00fcnchen|hamburg|frankfurt|cologne|k\u00f6ln|leipzig|stuttgart|d\u00fcsseldorf|dusseldorf|dresden|nuremberg|heidelberg/i],
