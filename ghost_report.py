@@ -101,7 +101,35 @@ print("\n== oldest ads still live ==")
 for age, r in aged[:6]:
     print("  %4dd  %s @ %s" % (age, r.get("title", "")[:52], r.get("company", "")[:24]))
 
-# ---------------- 3. repost candidates ----------------
+# ---------------- 2b. company-relative staleness ----------------
+# (idea credited to the Aladdin job-agent builder in the comments of the ghost-jobs
+# article: compare a posting's age to the median age of that company's own roles)
+co_ages = {}
+for age, r in aged:
+    co_ages.setdefault(r.get("company", ""), []).append(age)
+
+def median(v):
+    s = sorted(v)
+    return s[len(s) // 2] if s else None
+
+medians = {c: median(a) for c, a in co_ages.items() if len(a) >= 5}
+rel_stale = 0
+rel_stale_co = {}
+for age, r in aged:
+    c = r.get("company", "")
+    m = medians.get(c)
+    if m is not None and age > 2 * m:
+        rel_stale += 1
+        rel_stale_co[c] = rel_stale_co.get(c, 0) + 1
+print("\n== stale relative to their own company ==")
+print("  companies with >=5 dated postings: %d" % len(medians))
+print("  postings older than 2x their own company's median age: %d of %d dated (%.1f%%)" % (
+    rel_stale, len(aged), 100.0 * rel_stale / max(1, len(aged))))
+top_rel = sorted(rel_stale_co.items(), key=lambda x: -x[1])[:8]
+for c, n in top_rel:
+    print("  %-32s %d (median %dd)" % (c, n, medians.get(c, 0)))
+
+
 if len(snaps) >= 3:
     presence = defaultdict(set)
     for day, p in snaps:
