@@ -4941,4 +4941,4 @@ The shortlist below is today's free 20. Subscribers get the full list with every
   Landmark - GBR - Home/Remote | posted 2026-11-19 - https://www.landmark.co.uk/current-vacancy
 
 ---
-Method: [remote-job-engine](https://github.com/Reaver1000/remote-job-engine) sweeps 80+ public sources. The digest keeps remote postings whose recognised region is not the United States, posted within 7 days. No aggregator spam, no ghost-posting padding: everything here was live on an employer board this week. Open archive of the free shortlists: https://github.com/Reaver1000/remote-jobs-outside-the-us
+Method: [remote-job-engine](https://github.com/Reaver1000/remote-job-engine) sweeps 80+ public sources. The digest keeps remote postings whose recognised region is not the United States, posted within 7 days. No aggregator spam, no ghost-padding: everything here was live on an employer board this week. Subscribe for the daily issue: https://remotenotamerica.substack.com. Open archive of the free shortlists: https://github.com/Reaver1000/remote-jobs-outside-the-us
