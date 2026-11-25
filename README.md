@@ -15,6 +15,7 @@ Two live builds over the same data:
 - Web app, fully client-side (fetches latest.csv, aggregates in your browser):
   https://reaver1000-job-market-dashboard.static.hf.space
   Source in `web/`, deployed as a Hugging Face static Space.
+- Daily newsletter built from this data: https://remotenotamerica.substack.com
 - Tableau Public workbook (built on the 2026-11-17 snapshot; republish against
   `data/latest.csv` for current numbers):
   https://public.tableau.com/app/profile/david.buchan8163/viz/snapshotofJuniorRemoterolesavailable/Dashboard1
