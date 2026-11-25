@@ -1,6 +1,6 @@
 # Remote jobs outside the US, November 25, 2026
 
-The daily free shortlist: 20 fresh remote postings outside the US, from the previous sweep. Subscribers to the newsletter get the full list (313 postings today) the moment it is generated, with no delay. 
+The daily free shortlist: 20 fresh remote postings outside the US, from the previous sweep. Subscribers to the newsletter get the full list (2442 postings today) the moment it is generated, with no delay. 
 
 ## Free shortlist (previous sweep, 2026-11-23)
 
