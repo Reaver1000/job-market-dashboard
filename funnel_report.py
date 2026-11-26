@@ -56,8 +56,27 @@ def region_of(loc):
     return "Unrecognised"
 
 
+def sanity_checks(rows):
+    """Fail loudly if the pipeline regresses the way it did on 2026-11-21:
+    date parsing coverage and the remote-by-construction lane flags."""
+    dated = sum(1 for r in rows if (r.get("posted") or "").strip())
+    cov = dated / max(1, len(rows))
+    assert cov >= 0.95, "dated coverage regressed: %.1f%% of rows carry a date" % (100 * cov)
+    lanes = {}
+    for r in rows:
+        s = r.get("source") or ""
+        if s.startswith(("linkedin_", "freehire_")):
+            lanes.setdefault(s, 0)
+            if str(r.get("remote")) == "1":
+                lanes[s] += 1
+    for lane, n in lanes.items():
+        assert n > 0, "lane %s has zero remote rows - flag logic regressed" % lane
+    print("sanity checks pass: dated %.1f%%, %d guaranteed lanes verified remote" % (100 * cov, len(lanes)))
+
+
 def main():
     rows = list(csv.DictReader(open(LATEST, encoding="utf-8", newline="")))
+    sanity_checks(rows)
     total = len(rows)
     print("live postings: %d" % total)
 
