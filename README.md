@@ -16,6 +16,7 @@ Two live builds over the same data:
   https://reaver1000-job-market-dashboard.static.hf.space
   Source in `web/`, deployed as a Hugging Face static Space.
 - Daily newsletter built from this data: https://remotenotamerica.substack.com
+- Claude skill and MCP server over this dataset: https://github.com/Reaver1000/job-market-mcp
 - Tableau Public workbook (built on the 2026-11-17 snapshot; republish against
   `data/latest.csv` for current numbers):
   https://public.tableau.com/app/profile/david.buchan8163/viz/snapshotofJuniorRemoterolesavailable/Dashboard1
