@@ -57,21 +57,35 @@ def region_of(loc):
 
 
 def sanity_checks(rows):
-    """Fail loudly if the pipeline regresses the way it did on 2026-11-21:
-    date parsing coverage and the remote-by-construction lane flags."""
+    """Fail loudly on the two failure classes from 2026-11-21/26:
+    date parsing coverage, and forced remote flags that the lane's own text
+    does not support (the LinkedIn f_WT lesson)."""
     dated = sum(1 for r in rows if (r.get("posted") or "").strip())
     cov = dated / max(1, len(rows))
     assert cov >= 0.95, "dated coverage regressed: %.1f%% of rows carry a date" % (100 * cov)
+
     lanes = {}
     for r in rows:
         s = r.get("source") or ""
-        if s.startswith(("linkedin_", "freehire_")):
-            lanes.setdefault(s, 0)
-            if str(r.get("remote")) == "1":
-                lanes[s] += 1
-    for lane, n in lanes.items():
-        assert n > 0, "lane %s has zero remote rows - flag logic regressed" % lane
-    print("sanity checks pass: dated %.1f%%, %d guaranteed lanes verified remote" % (100 * cov, len(lanes)))
+        g = "ats" if s.startswith("ats_") else "linkedin" if s.startswith("linkedin_") else "freehire" if s.startswith("freehire_") else "other"
+        v = lanes.setdefault(g, {"n": 0, "remote": 0, "text": 0})
+        v["n"] += 1
+        if str(r.get("remote")) == "1":
+            v["remote"] += 1
+        blob = ((r.get("title") or "") + " " + (r.get("location") or "")).lower()
+        if "remote" in blob:
+            v["text"] += 1
+    for g, v in lanes.items():
+        if v["n"] < 200:
+            continue
+        rshare = v["remote"] / v["n"]
+        tshare = v["text"] / v["n"]
+        if rshare > 0.6 and tshare < 0.1:
+            raise AssertionError(
+                "lane group %r flags %.0f%% remote while only %.0f%% of its text says remote - forced flags without evidence"
+                % (g, 100 * rshare, 100 * tshare))
+    print("sanity checks pass: dated %.1f%%, %d lane groups verified (flags backed by text evidence)"
+          % (100 * cov, len(lanes)))
 
 
 def main():
