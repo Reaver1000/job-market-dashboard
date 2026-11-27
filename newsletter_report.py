@@ -202,6 +202,13 @@ def main():
     n_pay_shown = sum(1 for e in paid_rows if e[4]) + sum(1 for e in free_rows if e[4])
 
     head = "# Remote jobs outside the US, %s" % date.today().strftime("%B %d, %Y")
+    method_note = ""
+    if today == "2026-11-27":
+        method_note = (
+            "Note: the sweep query pack narrowed today to mid-level and junior operations, "
+            "implementation, solutions, support and data roles. The lower count is methodology, "
+            "not the market."
+        )
     intro_free = (
         "The shortlist below is today's free 20. Subscribers get the full list with every sweep: "
         "today that is **%d fresh remote postings outside the US**, every posting linking to the original advert, "
@@ -213,6 +220,7 @@ def main():
     free_body = render(free_rows, with_headers=False)
     combined = [
         head, "", intro_free, "",
+        *([method_note, ""] if method_note else []),
         "## Today's free shortlist (20)", "",
         free_body.rstrip(),
         "",
@@ -237,6 +245,7 @@ def main():
         "The daily free shortlist: 20 fresh remote postings outside the US. "
         "Subscribers to the newsletter get the full list with every sweep (%d postings from today's run). "
         % len(paid_rows),
+        *([method_note, ""] if method_note else []),
         "", "## Free shortlist (%s)" % today, "",
         free_body.rstrip(),
         "",

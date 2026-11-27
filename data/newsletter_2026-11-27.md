@@ -2,6 +2,8 @@
 
 The shortlist below is today's free 20. Subscribers get the full list with every sweep: today that is **465 fresh remote postings outside the US**, every posting linking to the original advert, pay shown where the ad shows it. Generated from [job-market-daily](https://huggingface.co/datasets/Reaver1000/job-market-daily).
 
+Note: the sweep query pack narrowed today to mid-level and junior operations, implementation, solutions, support and data roles. The lower count is methodology, not the market.
+
 ## Today's free shortlist (20)
 
 - **BC Support Consultant Fully Remote Up to £50,000** @ Pearson Carter [pay shown] (United Kingdom, posted 2026-11-24) - https://www.adzuna.co.uk/jobs/details/5976663338
