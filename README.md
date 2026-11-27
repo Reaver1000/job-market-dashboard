@@ -1,9 +1,13 @@
 # Job Market Dashboard
 
-A BI dashboard over a snapshot of **15,936 live job postings** collected from **81 public
-sources** on **2026-11-18** by my own job discovery pipeline
+A BI dashboard over a snapshot of **20,067 live job postings** collected from **69 public
+sources** on **2026-11-27** by my own job discovery pipeline
 ([remote-job-engine](https://github.com/Reaver1000/remote-job-engine)). The sweep runs daily
 and `data/latest.csv` is refreshed with it.
+
+On 27 November 2026 the sweep query pack narrowed to mid-level and junior operations,
+implementation, solutions, support and data roles. Row counts before and after that date
+are not directly comparable.
 
 Built first in **Tableau Public**, second in **Power BI**, because building the same dashboard
 in both tools is the fastest honest way to learn them.
@@ -35,13 +39,13 @@ the `Dockerfile` if you prefer a container.
 | company | hiring company or board slug |
 | location | posting location text |
 | remote | 1 if the location or title signals remote work, else 0 |
-| posted | posting date, where the source provided one (about 85% of rows) |
+| posted | posting date, where the source provided one; recent sweeps carry a date for every row |
 | source | collecting lane: ats_greenhouse, ats_ashby, freehire_personio, linkedin_de, ... |
 | url | original posting URL |
 
 Two things worth knowing before charting `posted`. Greenhouse reports a posting's `updated_at`,
 not its first-published date, so a handful of dormant postings carry old dates (the oldest in
-the current snapshot is 2021-03-16). And rows without a date stay blank rather than being
+the current snapshot is 2019-04-12). And rows without a date stay blank rather than being
 filled with a fake value.
 
 ## Refreshing the snapshot

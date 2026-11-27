@@ -1,10 +1,7 @@
 """Generate the daily two-tier 'remote jobs outside the US' digest.
 
-Free tier: the top 20 postings from the PREVIOUS sweep (a day's delay), chosen
-for region spread, pay-marked first. Paid tier: the full fresh list from
-today's sweep, no delay. The delay is the product: freshness is the scarce
-good, and this pipeline's own measurements (the funnel analysis) show the
-first days of a posting's life are the ones that matter.
+Free tier: the top 20 postings from today's sweep, chosen for region spread,
+pay-marked first. Paid tier: the full fresh list from the same sweep, no delay.
 
 Outputs:
   data/newsletter_YYYY-MM-DD.md        combined post with a PAYWALL marker
@@ -115,6 +112,7 @@ def snapshot_dates():
 def pick_free(rows, cap=FREE_CAP):
     """Round-robin across regions (biggest regions first), pay-marked and
     freshest first within each region."""
+    rows = dedupe_rows(rows)
     by_reg = defaultdict(list)
     for entry in rows:
         by_reg[entry[3]].append(entry)
@@ -135,6 +133,27 @@ def pick_free(rows, cap=FREE_CAP):
             break
         i += 1
     return picked
+
+
+def dedupe_rows(rows):
+    """Drop the same role arriving through different boards.
+
+    The snapshot dedupes by URL, so one advert can still appear once per
+    aggregator. Key on the normalised title, company and region, which keeps
+    genuinely different locations while removing the obvious repeats.
+    """
+    seen = set()
+    out = []
+    for entry in rows:
+        row, _, _, region, _ = entry
+        title = re.sub(r"[^a-z0-9]+", " ", (row.get("title") or "").lower()).strip()
+        company = re.sub(r"[^a-z0-9]+", " ", (row.get("company") or "").lower()).strip()
+        key = (title, company, region)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(entry)
+    return out
 
 
 def render(entries, with_headers=True):
@@ -177,6 +196,7 @@ def main():
         raise SystemExit("need today's snapshot")
 
     paid_rows = eligible(today_path, date.today())
+    paid_rows = dedupe_rows(paid_rows)
     free_rows = pick_free(paid_rows)
 
     n_pay_shown = sum(1 for e in paid_rows if e[4]) + sum(1 for e in free_rows if e[4])
